@@ -1,52 +1,42 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { ProtectedRoute } from "./components/ProtectedRoute"; // Fixed import path
 import { auth } from "./firebase";
 import { Login } from "./pages/Login"; 
-import { Private } from "./pages/Private";  // Ensure file name matches
+import { Private } from "./pages/Private";
+import NavbarMain from "./components/navbar/NavbarMain"; 
+import HeroMain from "./components/HeroSection/HeroMain";
 
-import './App.css';
 
-function App() { 
+
+function App() {
   const [user, setUser] = useState(null);
   const [isFetching, setIsFetching] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-        setIsFetching(false);
-      } else 
-      {
-        setUser(null);
-        setIsFetching(false);
-      }
+      setUser(user);
+      setIsFetching(false);
     });
 
-    return () => unsubscribe(); // Corrected function name
+    return () => unsubscribe();
   }, []);
 
   if (isFetching) {
     return <h2>Loading...</h2>;
   }
 
-
   return (
     <BrowserRouter>
+      {user && <NavbarMain />} {/* Navbar will only show if user is logged in */}
+      {user && <HeroMain />} {/* Navbar will only show if user is logged in */}
+      
       <Routes>
         <Route path="/" element={<Login user={user} />} />
-        <Route
-          path="/private"
-          element={
-            <ProtectedRoute user={user}>
-              <Private></Private>
-            </ProtectedRoute>
-          }
-        ></Route>
+        <Route path="/private" element={user ? <Private /> : <Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
-  ); 
+  );
 }
 
 export default App;
