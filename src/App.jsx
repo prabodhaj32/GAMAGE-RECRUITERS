@@ -28,13 +28,15 @@ function App() {
 
   return (
     <BrowserRouter>
-      {user && <NavbarMain />} {/* Navbar will only show if user is logged in */}
-      {user && <HeroMain />} {/* Navbar will only show if user is logged in */}
+      
       
       <Routes>
         <Route path="/" element={<Login user={user} />} />
         <Route path="/private" element={user ? <Private /> : <Navigate to="/" />} />
       </Routes>
+
+      {user && <NavbarMain />} {/* Navbar will only show if user is logged in */}
+      {user && <HeroMain />} {/* Navbar will only show if user is logged in */}
     </BrowserRouter>
   );
 }

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const HeroMain = () => {
   // State for form inputs
@@ -12,6 +13,19 @@ const HeroMain = () => {
   // State for managing students
   const [students, setStudents] = useState([]);
   const [editingId, setEditingId] = useState(null);
+
+  // Fetch users from API
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/api/users");
+        setStudents(response.data); // Assuming the response is an array of users
+      } catch (error) {
+        console.log("Error while fetching data", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   // Handle form input changes
   const handleChange = (e) => {
